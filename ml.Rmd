@@ -1,0 +1,67 @@
+---
+title: "ml"
+output: html_document
+---
+## Types of Machine Learning(ML)
+- Supervised
+- Unsupervised
+- Reinforcement
+
+### Supervised ML
+
+#### Loading required Packages used
+```{r eval=T, echo=T, results='hide', message=F}
+required.packages <- c('dplyr', 'tidyr', 'broom', 'purrr', 'caret', 'PerformanceAnalytics', 'GGally', 'maps', 'mapproj', 'C50')
+lapply(required.packages, require, character.only = T)
+```
+#### Load some data
+```{r eval=T, echo=T, results='hide', message=F}
+data(churn)
+churnTrain$churn <- factor(churnTrain$churn, levels = c('no', 'yes'))
+```
+#### Setting seed fro reproducibility
+```{r eval=T, echo=T, results='hide', message=F}
+set.seed(21)
+```
+#### Build a custom trainControl with Bootstrapping/Cross-validation
+```{r eval=T, echo=T, results='hide', message=F}
+myControl <- trainControl(
+  summaryFunction = twoClassSummary,
+  classProbs = T, # Super important!
+  verboseIter = T,
+  savePredictions = T,
+#  index = createFolds(churnTrain$churn, k = 5),
+#  method = 'cv',
+  number = 10
+)
+```
+#### ranger model
+```{r eval=T, echo=T, results='hide', message=F}
+mranger <- train(churn ~ .,
+                 data = churnTrain,
+                 method = 'ranger',
+                 tuneLength = 5,
+                 trControl = myControl,
+                 metric = 'ROC',
+                 preProcess = c('nzv','medianImpute', 'center', 'scale')
+)
+```
+#### glmnet model
+```{r eval=T, echo=T, results='hide', message=F}
+mglmnet <- train(churn ~ .,
+                 data = churnTrain,
+                 method = 'glmnet',
+                 trControl = myControl,
+                 tuneGrid = expand.grid(alpha = 0:1,
+                                        lambda = 0:10/10),
+                 metric = 'ROC',
+                 preProcess = c('nzv','medianImpute', 'center', 'scale')
+)
+```
+#### Visualizing built models
+```{r eval=F, echo=T, results='hide', message=F}
+par(mfrow=c(1,2))
+plot(mranger)
+plot(mglmnet)
+```
+```
