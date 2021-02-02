@@ -1,15 +1,15 @@
 {
-  'id': '1',
-  'name': 'name1',
-  'jobtitle': 'cloudengineer'
+  "id": "1",
+  "name": "name1",
+  "jobtitle": "cloudengineer"
 },
 {
-  'id': '2',
-  'name': 'name2',
-  'jobtitle': 'cloudplatform'
+  "id": "2",
+  "name": "name2",
+  "jobtitle": "cloudplatform"
 },
 {
-  'id': '3',
-  'name': 'name3',
-  'jobtitle': 'cloudengineer'
+  "id": "3",
+  "name": "name3",
+  "jobtitle": "cloudengineer"
 }
