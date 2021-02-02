@@ -1,0 +1,17 @@
+{
+  "emp1": {
+    "id": "1",
+    "name": "name1",
+    "jobtitle": "cloudengineer"
+  },
+  "emp2": {
+    "id": "2",
+    "name": "name2",
+    "jobtitle": "cloudplatform"
+  },
+  "emp3": {
+    "id": "3",
+    "name": "name3",
+    "jobtitle": "cloudengineer"
+  }
+}
