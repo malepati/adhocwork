@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Start Alpine container
+      docker_container:
+        name: app1
+        image: alpine:3.13.1
+        container_default_behavior: no_defaults
+        command: ["sleep", "infinity"]
+    - name: Stop Alpine container
+      docker_container:
+        name: app1
+        container_default_behavior: no_defaults
+        state: absent
+
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  vars:
+    cassandarImage: cassandra
+  tasks:
+    - name: "Start {{ cassandarImage }} container"
+      docker_container:
+        name: cs1
+        image: "{{ cassandarImage }}"
+        container_default_behavior: no_defaults
+        ports:
+          - "7199:7199"
+          - "9042:9042"
+        privileged: yes
+    - name: "Check nodetool status on {{ cassandarImage }} container"
+      shell: sleep 15s; docker exec cs1 bash -c 'nodetool status'
+    - name: "Stop {{ cassandarImage }} docker"
+      docker_container:
+        name: cs1
+        container_default_behavior: no_defaults
+        state: absent
