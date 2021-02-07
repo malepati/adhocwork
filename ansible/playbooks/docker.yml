@@ -31,6 +31,10 @@
         privileged: yes
     - name: "Check nodetool status on {{ cassandarImage }} container"
       shell: sleep 15s; docker exec cs1 bash -c 'nodetool status'
+      register: cs_exec_output
+    - name: "Print nodetool status on {{ cassandarImage }} container"
+      debug:
+        msg: "{{ cs_exec_output.stdout_lines }}"
     - name: "Stop {{ cassandarImage }} docker"
       docker_container:
         name: cs1
