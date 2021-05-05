@@ -1,4 +1,3 @@
-## JanusGraph
 gremlin.graph=org.janusgraph.core.JanusGraphFactory
 cache.db-cache = false
 cache.db-cache-clean-wait = 20
