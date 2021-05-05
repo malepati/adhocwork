@@ -1,0 +1,35 @@
+## JanusGraph
+gremlin.graph=org.janusgraph.core.JanusGraphFactory
+cache.db-cache = false
+cache.db-cache-clean-wait = 20
+cache.db-cache-time = 180000
+cache.db-cache-size = 0.5
+storage.backend = cql
+storage.hostname = REPLACE_IPS
+storage.username = janusgraphmgr
+storage.password = REPLACE_CQL_PASSWORD
+storage.lock.wait = 90
+storage.lock.retries = 3
+storage.lock.expiry-time = 300000
+storage.cql.keyspace = REPLACE_KEYSPACE
+storage.cql.local-datacenter = REPLACE_DC
+storage.cql.only-use-local-consistency-for-system-operations = true
+storage.cql.ssl.enabled = true
+storage.cql.ssl.truststore.location = conf/gremlin/truststore
+storage.cql.ssl.truststore.location = REPLACE_TRUSTSTORE_PASSWORD
+storage.read-consistency-level = LOCAL_QUORUM
+storage.write-consistency-level = LOCAL_QUORUM
+
+metrics.enabled = true
+metrics.jmx.enabled = true
+ids.block-size= 10000000
+ids.renew-percentage= 0.3
+index.search.backend = elasticsearch
+index.search.hostname = REPLACE_LB:443
+index.search.elasticsearch.create.ext.number_of_shards = 15
+index.search.elasticsearch.http.auth.type = basic
+index.search.elasticsearch.http.auth.basic.username = janusgraphmgr
+index.search.elasticsearch.http.auth.basic.password = REPLACE_ES_PASSWORD
+index.search.elasticsearch.ssl.enabled = true
+index.search.elasticsearch.retry_on_conflict = 5
+query.batch = true
