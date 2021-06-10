@@ -1,4 +1,4 @@
-package com.janus.ingestion.confing;
+package com.janus.ingestion.config;
 
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
