@@ -1,0 +1,81 @@
+package com.janus.ingestion.confing;
+
+import org.apache.tinkerpop.gremlin.driver.Client;
+import org.apache.tinkerpop.gremlin.driver.Cluster;
+import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
+import org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.structure.io.gryo.GryoMapper;
+import org.apache.tinkerpop.gremlin.structure.util.empty.EmptyGraph;
+import org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class JanusConnection{
+  @Value("${janusgraph.hosts}")
+  String urls;
+
+  @Value("${janusgraph.port}")
+  String port;
+
+  @Value("${janusgraph.username}")
+  String username;
+
+  @Value("${janusgraph.password}")
+  String password;
+
+  @Value("${janusgraph.truststore}")
+  String truststore;
+
+  @Value("${janusgraph.enableSSL}")
+  String enableSSL;
+
+  @Value("${janusgraph.enableCertPath}")
+  String enableCertPath;
+
+  @Bean
+  public CLuster cluster(){
+    GryoMapper.Builder mapBuilder = GryoMapper.build().addRegistry(JanusGraphIoRegistry.getInstance());
+    Cluster cluster;
+    if (enableCertPath) {
+      cluster = Cluster.build().serializer(
+        new GryoMessageSerializerV1d0(mapBuilder))
+        .addContactPoints(urls.split(","))
+        .port(Integer.parseInt(port))
+        .credentials(username, password)
+        .maxSimultaneousUsagePerConnection(8)
+        .maxInProcessPerConnection(8)
+        .maxConnectionPoolSize(8)
+        .minConnectionPoolSize(8)
+        .enableSSL(enableSSL)
+        .trustCertificateChainFile(truststore)
+        .reconnectInterval(2000)
+        .create();
+    } else {
+      cluster = Cluster.build().serializer(
+        new GryoMessageSerializerV1d0(mapBuilder))
+        .addContactPoints(urls.split(","))
+        .port(Integer.parseInt(port))
+        .credentials(username, password)
+        .maxSimultaneousUsagePerConnection(8)
+        .maxInProcessPerConnection(8)
+        .maxConnectionPoolSize(8)
+        .minConnectionPoolSize(8)
+        .enableSSL(enableSSL)
+        .reconnectInterval(2000)
+        .create();
+    }
+    return cluster;
+  }
+
+  @Bean
+  public GraphTraversalSource graphTraversal() {
+    Cluster cluster = cluster();
+    Client client = cluster.connect();
+    Graph graph = EmptyGraph.instance();
+    return graph.traversal().withRemote(DriverRemoteConnection.using(client.getCluster()));
+  }
+}
